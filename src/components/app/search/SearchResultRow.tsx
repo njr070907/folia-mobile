@@ -86,7 +86,7 @@ const SearchResultRow: React.FC<SearchResultRowProps> = ({
                             type="button"
                             disabled={isUnavailable}
                             onClick={() => onPlayTrack(track)}
-                            className="truncate text-left text-sm font-semibold disabled:cursor-not-allowed"
+                            className="truncate text-left text-base sm:text-sm font-semibold disabled:cursor-not-allowed"
                             style={{ color: 'var(--text-primary)' }}
                         >
                             {formatSongName(track)}
@@ -97,8 +97,8 @@ const SearchResultRow: React.FC<SearchResultRowProps> = ({
                             </span>
                         )}
                     </div>
-                    <div className="mt-1 flex min-w-0 items-center gap-1 text-xs" style={{ color: 'var(--text-secondary)' }}>
-                        <span className="min-w-0 truncate">
+                    <div className="mt-1 flex min-w-0 flex-col items-start gap-1 text-sm sm:flex-row sm:items-center sm:text-xs" style={{ color: 'var(--text-secondary)' }}>
+                        <span className="min-w-0 max-w-full truncate">
                             {artists.map((artist, index) => {
                                 const canOpenArtist = Boolean(
                                     track.isLocal ? artist.entityId
@@ -122,12 +122,12 @@ const SearchResultRow: React.FC<SearchResultRowProps> = ({
                         </span>
                         {album?.name && (
                             <>
-                                <span className="shrink-0 opacity-40">•</span>
+                                <span className="hidden shrink-0 opacity-40 sm:inline">•</span>
                                 <button
                                     type="button"
                                     disabled={!canOpenAlbum}
                                     onClick={() => onOpenAlbum(track, album.name, album.id, album.entityId)}
-                                    className="max-w-[45%] truncate text-left enabled:hover:underline disabled:cursor-default"
+                                    className="max-w-full sm:max-w-[45%] truncate text-left enabled:hover:underline disabled:cursor-default"
                                 >
                                     {album.name}
                                 </button>
@@ -143,7 +143,7 @@ const SearchResultRow: React.FC<SearchResultRowProps> = ({
                     <button
                         type="button"
                         onClick={() => onAddTrackToQueue(track)}
-                        className="shrink-0 rounded-full p-2 opacity-60 transition-all hover:bg-black/10 hover:opacity-100 dark:hover:bg-white/10 sm:opacity-0 sm:group-hover:opacity-100"
+                        className="flex h-11 w-11 shrink-0 items-center justify-center rounded-full sm:h-auto sm:w-auto sm:p-2 opacity-60 transition-all hover:bg-black/10 hover:opacity-100 dark:hover:bg-white/10 sm:opacity-0 sm:group-hover:opacity-100"
                         title={t('navidrome.addToQueue')}
                     >
                         <Plus size={16} />
