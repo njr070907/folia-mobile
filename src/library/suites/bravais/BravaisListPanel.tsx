@@ -7,6 +7,7 @@ import { BravaisSeamStatusLine } from './BravaisSeamCollection';
 import BravaisSeamFilterField from './BravaisSeamFilterField';
 import { setBravaisLinkedKey, useBravaisUiStore } from './bravaisUiStore';
 import BravaisSeamCrumbs from './BravaisSeamCrumbs';
+import { useMediaQuery } from '../../../hooks/useMediaQuery';
 
 // src/library/suites/bravais/BravaisListPanel.tsx
 // 列表面板（设计稿 §5「面板」「歌曲列表」）：缝加宽到 min(420, 视口 − 52)，标题横排压在顶部，下面是工具行（本地文件夹的
@@ -66,6 +67,7 @@ const ListRow = ({ index, style, items, highlightKey, nowPlayingKey, actions }: 
 const BravaisListPanel: React.FC<{ layer: BravaisLayer; depth: number; actions: BravaisPanelActions }> = ({ layer, actions }) => {
     const { t } = useTranslation();
     const listRef = useListRef(null);
+    const isMobile = useMediaQuery('(max-width: 639px)');
     const { seam, entries } = layer;
     const collection = seam.collection;
     const linkedKey = useBravaisUiStore(state => state.linkedKey);
@@ -130,7 +132,7 @@ const BravaisListPanel: React.FC<{ layer: BravaisLayer; depth: number; actions: 
                     <List
                         listRef={listRef}
                         rowCount={items.length}
-                        rowHeight={BRAVAIS_LIST_ROW_HEIGHT}
+                        rowHeight={isMobile ? 60 : BRAVAIS_LIST_ROW_HEIGHT}
                         rowComponent={ListRow}
                         rowProps={rowProps}
                         overscanCount={6}
