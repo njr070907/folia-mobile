@@ -88,11 +88,22 @@ export const toSafePlaybackUrl = (
     url: string | null | undefined,
     isElectron = typeof window !== 'undefined' && Boolean(window.electron)
 ): string | null | undefined => {
-    if (!url || !isElectron) {
-        return toSafeRemoteUrl(url);
-    }
+    if (!url) return url;
 
     const normalizedUrl = url.split(/,\s*(?=https?:\/\/)/i)[0]?.trim() || url;
+    if (!isElectron) {
+        try {
+            const source = new URL(normalizedUrl);
+            // This upstream HTTP CDN has no valid matching TLS certificate. Use the site's
+            // restricted streaming relay instead of inventing an HTTPS version of its URL.
+            if (source.protocol === 'http:' && source.hostname === 'fs.youthandroid2.kugou.com') {
+                return `/api/kugou-media?url=${encodeURIComponent(normalizedUrl)}`;
+            }
+        } catch {
+            return toSafeRemoteUrl(normalizedUrl);
+        }
+        return toSafeRemoteUrl(normalizedUrl);
+    }
     try {
         const parsedUrl = new URL(normalizedUrl);
         if (
