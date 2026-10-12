@@ -626,6 +626,34 @@
 .bravais-seam-home.is-compact .bravais-seam-shortcuts { gap: 0; }
 .bravais-seam-home.is-compact .bravais-seam-shortcuts-rule { margin-bottom: 8px; }
 
+/* Phone targets stay inside the measured seam; keep the draggable poster wall. */
+@media (max-width: 639px) {
+    .bravais-root { overscroll-behavior: none; }
+    .bravais-field { overscroll-behavior: none; }
+    .bravais-seam .bravais-seam-home.is-compact { --bravais-home-gap: 10px; padding-top: max(14px, env(safe-area-inset-top)); }
+    .bravais-seam-home .bravais-seam-tabs .bravais-seam-home-tab,
+    .bravais-seam-home.is-compact .bravais-seam-tabs .bravais-seam-home-tab {
+        min-width: 44px; min-height: 48px; padding: 8px 4px; font-size: 14px;
+    }
+    .bravais-seam-home.is-compact .bravais-seam-tools { grid-template-columns: 44px; gap: 8px; }
+    .bravais-seam-home .bravais-seam-tools .bravais-seam-icon,
+    .bravais-seam-home.is-compact .bravais-seam-tools .bravais-seam-icon,
+    .bravais-seam-home.is-compact .bravais-seam-tools .bravais-seam-icon.is-wide {
+        width: 44px; height: 44px;
+    }
+    .bravais-seam .bravais-seam-back { width: 44px; height: 44px; }
+    .bravais-seam .bravais-search-form input,
+    .bravais-seam .bravais-seam-filter-line input,
+    .bravais-seam .bravais-seam-filter-field.is-home .bravais-seam-filter-line input { font-size: 16px; }
+    .bravais-seam .bravais-seam-panel { padding: 16px; }
+    .bravais-seam .bravais-list-row { grid-template-columns: 3ch minmax(0, 1fr) auto; gap: 8px; }
+    .bravais-seam .bravais-list-text { gap: 4px; }
+    .bravais-seam .bravais-list-text strong { font-size: 15px; }
+    .bravais-seam .bravais-list-text small { font-size: 13px; }
+    .bravais-seam .bravais-list-time { font-size: 12px; }
+    .bravais-seam .bravais-seam-actions .bravais-chrome-button { min-height: 44px; font-size: 14px; }
+}
+
 /* 放不下时挪进「⋯」菜单：图标同样用强调色。 */
 .bravais-seam-menu.is-home button.is-shortcut svg { color: var(--text-accent, currentColor); opacity: 1; }
 
