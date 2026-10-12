@@ -136,6 +136,19 @@ export function usePlaybackAudioBridge({
         // The context is the sentinel, not the source node: a deck that failed to connect must
         // not let this run twice, because createMediaElementSource throws on a second call.
         if (!audioRef.current || audioContextRef.current) return;
+        // Keep iOS media on its native background playback path. A MediaElementSource
+        // would route it through an AudioContext that Safari can suspend on screen lock.
+        const isIOS = /iPad|iPhone|iPod/.test(navigator.userAgent)
+            || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+        if (isIOS) {
+            try {
+                const session = (navigator as Navigator & { audioSession?: { type: string } }).audioSession;
+                if (session) session.type = 'playback';
+            } catch (error) {
+                console.warn('[AudioSession] Playback session unavailable', error);
+            }
+            return;
+        }
         try {
             const AudioContextClass = window.AudioContext || (window as Window & typeof globalThis & { webkitAudioContext?: typeof AudioContext }).webkitAudioContext;
             const ctx = new AudioContextClass();
