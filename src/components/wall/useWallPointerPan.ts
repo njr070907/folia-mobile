@@ -139,6 +139,38 @@ export const useWallPointerPan = ({
     useEffect(() => {
         const container = containerRef.current;
         if (!container) return;
+        // Capture touch gestures across the whole wall, including its chrome. Safari
+        // may dispatch a compatibility click with detail=0 after a drag or cancellation.
+        const root = container.closest('.lattice-root') || container;
+        let touch: { id: number; x: number; y: number; moved: boolean } | null = null;
+        let suppressClickUntil = 0;
+        const startTouch = (event: globalThis.PointerEvent) => {
+            if (event.pointerType !== 'touch' || !event.isPrimary) return;
+            suppressClickUntil = 0;
+            touch = { id: event.pointerId, x: event.clientX, y: event.clientY, moved: false };
+        };
+        const moveTouch = (event: globalThis.PointerEvent) => {
+            if (!touch || touch.id !== event.pointerId) return;
+            if (Math.hypot(event.clientX - touch.x, event.clientY - touch.y) > DRAG_THRESHOLD_PX) {
+                touch.moved = true;
+            }
+        };
+        const endTouch = (event: globalThis.PointerEvent) => {
+            if (!touch || touch.id !== event.pointerId) return;
+            moveTouch(event);
+            if (touch.moved) suppressClickUntil = Date.now() + 600;
+            touch = null;
+        };
+        const blockTouchClick = (event: Event) => {
+            if (!touch?.moved && Date.now() >= suppressClickUntil) return;
+            event.preventDefault();
+            event.stopImmediatePropagation();
+        };
+        root.addEventListener('pointerdown', startTouch as EventListener, true);
+        window.addEventListener('pointermove', moveTouch, true);
+        window.addEventListener('pointerup', endTouch, true);
+        window.addEventListener('pointercancel', endTouch, true);
+        root.addEventListener('click', blockTouchClick, true);
         const classify = createWallWheelClassifier();
         // 交接（翻牌到另一面墙）期间不接滚轮，正在平滑的也停下：交接要按此刻的相机量磁贴位置。
         const inHandoff = () => Boolean(container.closest('[data-wall-handoff]'));
@@ -223,6 +255,11 @@ export const useWallPointerPan = ({
         container.addEventListener('keydown', onKeyDown, true);
         window.addEventListener('blur', cancel);
         return () => {
+            root.removeEventListener('pointerdown', startTouch as EventListener, true);
+            window.removeEventListener('pointermove', moveTouch, true);
+            window.removeEventListener('pointerup', endTouch, true);
+            window.removeEventListener('pointercancel', endTouch, true);
+            root.removeEventListener('click', blockTouchClick, true);
             container.removeEventListener('wheel', onWheel);
             container.removeEventListener('keydown', onKeyDown, true);
             window.removeEventListener('blur', cancel);
