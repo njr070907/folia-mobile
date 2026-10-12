@@ -108,6 +108,8 @@ const SearchWorkspace: React.FC<SearchWorkspaceProps> = ({
                         hasCollection ? 'z-[5]' : 'z-50'
                     }`}
                     style={{
+                        paddingTop: 'max(1rem, env(safe-area-inset-top))',
+                        paddingBottom: 'max(1rem, env(safe-area-inset-bottom))',
                         color: theme.primaryColor,
                         backgroundColor: isDaylight ? 'rgba(250,250,250,0.96)' : 'rgba(8,8,10,0.94)',
                         backdropFilter: 'blur(24px)',
@@ -116,7 +118,7 @@ const SearchWorkspace: React.FC<SearchWorkspaceProps> = ({
                     <header className="mx-auto flex w-full max-w-5xl shrink-0 flex-col gap-3">
                         <div className="flex items-center gap-3">
                             <form
-                                className={`relative flex-1 rounded-2xl border ${
+                                className={`relative min-w-0 flex-1 rounded-2xl border ${
                                     isDaylight ? 'border-black/10 bg-black/[0.04]' : 'border-white/10 bg-white/[0.05]'
                                 }`}
                                 onSubmit={(event) => {
@@ -133,7 +135,7 @@ const SearchWorkspace: React.FC<SearchWorkspaceProps> = ({
                                     value={searchQuery}
                                     onChange={event => setSearchQuery(event.target.value)}
                                     placeholder={t('search.placeholder')}
-                                    className="w-full bg-transparent py-3.5 pl-11 pr-4 text-sm outline-none"
+                                    className="w-full bg-transparent py-3.5 pl-11 pr-4 text-base sm:text-sm outline-none"
                                     autoFocus
                                 />
                             </form>
@@ -159,7 +161,7 @@ const SearchWorkspace: React.FC<SearchWorkspaceProps> = ({
                                             onSubmitSearch(source);
                                         }
                                     }}
-                                    className={`rounded-full px-4 py-2 text-xs font-medium transition-colors ${
+                                    className={`min-h-11 shrink-0 rounded-full px-4 py-2 text-sm sm:text-xs font-medium transition-colors ${
                                         source === searchSourceTab
                                             ? 'shadow-sm'
                                             : isDaylight
