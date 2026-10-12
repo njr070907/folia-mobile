@@ -3,6 +3,7 @@ import { List, useListRef } from 'react-window';
 import type { UnifiedSong } from '../../../types';
 import type { MediaId } from '../../../types/onlineMusic';
 import SearchResultRow from './SearchResultRow';
+import { useMediaQuery } from '../../../hooks/useMediaQuery';
 
 // src/components/app/search/SearchResultsList.tsx
 
@@ -30,6 +31,7 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({
     ...rowProps
 }) => {
     const listRef = useListRef(null);
+    const isMobile = useMediaQuery('(max-width: 639px)');
     const latestScrollTopRef = useRef(scrollTop);
     const commitTimerRef = useRef<ReturnType<typeof setTimeout> | null>(null);
     const stableRowProps = useMemo(() => ({ tracks, ...rowProps }), [rowProps, tracks]);
@@ -53,7 +55,7 @@ const SearchResultsList: React.FC<SearchResultsListProps> = ({
         <List
             listRef={listRef}
             rowCount={tracks.length}
-            rowHeight={76}
+            rowHeight={isMobile ? 100 : 76}
             rowComponent={Row as any}
             rowProps={stableRowProps}
             overscanCount={6}
